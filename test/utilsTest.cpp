@@ -40,5 +40,11 @@ TEST_CASE("ColetaTermos da Linha", "[utils]") {
         REQUIRE(linha.operacao == "COPY");
         REQUIRE(linha.op1 == "LABEL");
         REQUIRE(linha.op2 == "LABEL + 1");
+    }SECTION("Rótulo com operações matemáticas com números com mais dígitos") {
+        Linha linha = coletaTermosDaLinha("COPY LABEL + 123, LABEL");
+        REQUIRE(linha.rotulo.empty());
+        REQUIRE(linha.operacao == "COPY");
+        REQUIRE(linha.op1 == "LABEL + 123");
+        REQUIRE(linha.op2 == "LABEL");
     }
 }
