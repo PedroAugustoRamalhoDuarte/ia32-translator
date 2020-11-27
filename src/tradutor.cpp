@@ -12,10 +12,10 @@ bool operacaoIsJmp(string operacao) {
 
 string Tradutor::translate(const Linha &linha) {
     string output_line;
-    string acc = "r9";
+    string acc = "edx";
     // MOV, ADD, SUB
     if (linha.operacao == "MOV" or linha.operacao == "ADD" or linha.operacao == "SUB") {
-        output_line = linha.operacao + " " + acc + ",  " + linha.op1;
+        output_line = linha.operacao + " " + acc + ", [" + linha.op1 + "]";
     } else if (linha.operacao == "SECTION") {
         if (linha.op1 == "TEXT") {
             output_line = "global _start\n";
@@ -29,7 +29,7 @@ string Tradutor::translate(const Linha &linha) {
             listaBss.push_back(linha.rotulo + " resb " + linha.op1);
         }
     } else if (linha.operacao == "CONST") {
-        listaData.push_back(linha.rotulo + " dd " + linha.op1);
+        listaData.push_back(linha.rotulo + " dd '" + linha.op1 + "'");
     } else if (linha.operacao == "LOAD") {
         output_line = "mov " + acc + ",  [" + linha.op1 + "]"; // Parênteses para trabalhar com os valores
     } else if (linha.operacao == "STORE") {
