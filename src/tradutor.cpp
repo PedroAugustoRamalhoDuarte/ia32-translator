@@ -22,6 +22,8 @@ string Tradutor::translate(const Linha &linha) {
             output_line += "section .text\n";
             output_line += "_start:";
         }
+    } else if (linha.operacao == "COPY") {
+        output_line = "mov [" + linha.op2 + "]" + ", [" + linha.op1 + "]";
     } else if (linha.operacao == "SPACE") {
         if (linha.op1.empty()) {
             listaBss.push_back(linha.rotulo + " resb 1");
@@ -49,7 +51,10 @@ string Tradutor::translate(const Linha &linha) {
         output_line = "mov eax, " + acc;
         output_line = "mov edx, " + acc;
         output_line = "idiv " + linha.op1;
+    } else if (linha.operacao == "MULT") {
+        // TODO Mult
     }
+
 
     if (!output_line.empty()) {
         output->writeLine(output_line);
@@ -84,4 +89,3 @@ void Tradutor::run() {
     }
     arquivo->finishWrite();
 }
-// IF CONST DATA, IF SPACE BSS
