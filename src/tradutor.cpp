@@ -13,8 +13,7 @@ bool operacaoIsJmp(string operacao) {
 string Tradutor::translate(const Linha &linha) {
     string output_line;
     string acc = "edx";
-    // MOV, ADD, SUB
-    if (linha.operacao == "MOV" or linha.operacao == "ADD" or linha.operacao == "SUB") {
+    if (linha.operacao == "ADD" or linha.operacao == "SUB") {
         output_line = linha.operacao + " " + acc + ", [" + linha.op1 + "]";
     } else if (linha.operacao == "SECTION") {
         if (linha.op1 == "TEXT") {
@@ -37,15 +36,15 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "STORE") {
         output_line = "mov [" + linha.op1 + "], " + acc; // Parênteses para trabalhar com os valores
     } else if (linha.operacao == "JMP") {
-        // JUMPS
+        output_line = "jmp " + linha.op1;
     } else if (operacaoIsJmp(linha.operacao)) {
-        output_line = "cmp eax 0";
+        output_line = "cmp " + acc + " 0\n";
         if (linha.operacao == "JMPZ") {
-            // JZ
+            output_line = "jz " + linha.op1;
         } else if (linha.operacao == "JMPN") {
-            // JL
+            output_line = "jl " + linha.op1;
         } else if (linha.operacao == "JMPP") {
-            // JG
+            output_line = "jg " + linha.op1;
         }
     } else if (linha.operacao == "DIV") {
         output_line = "mov eax, " + acc;
@@ -55,23 +54,23 @@ string Tradutor::translate(const Linha &linha) {
         // TODO Mult
     }
 
-
-    if (!output_line.empty()) {
-        output->writeLine(output_line);
-    }
-
+    return output_line;
 }
 
 void Tradutor::run() {
     string linha, ultimoRotulo;
-    bool printLine = true;
+    string linhaTranslate;
     int contadorLinha = 0;
     while (!arquivo->hasEnd()) {
         arquivo->getLine(&linha);
         contadorLinha++;
         if (linha.empty()) continue;
         Linha l = coletaTermosDaLinha(linha, false);
-        translate(l);
+        linhaTranslate = translate(l);
+        // Escreve no arquivo a linha traduzida
+        if (!linhaTranslate.empty()) {
+            output->writeLine(linhaTranslate);
+        }
     }
 
     if (!listaData.empty()) {
