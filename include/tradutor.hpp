@@ -16,7 +16,17 @@ public:
 
     explicit Tradutor(ArquivoHandler *arquivoHandler);
 
-    string translate(const Linha& linha);
-
     void run();
+
+private:
+    map<string, string> convertIO = {
+            {"INPUT",    "LerInteiro"},
+            {"OUTPUT",   "EscreverInteiro"},
+            {"C_INPUT",  "LeerChar"},
+            {"C_OUPUT",  "EscreverChar"},
+            {"S_INPUT",  "LeerString"},
+            {"S_OUTPUT", "EscreveString"}
+    };
+
+    string translate(const Linha &linha);
 };

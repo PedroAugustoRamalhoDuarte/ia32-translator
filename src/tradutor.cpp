@@ -6,8 +6,14 @@ Tradutor::Tradutor(ArquivoHandler *arquivoHandler) {
     this->output = new ArquivoFisico("../test.s", true);
 }
 
-bool operacaoIsJmp(string operacao) {
+bool operacaoIsJmp(const string &operacao) {
     return operacao == "JMPZ" or operacao == "JMPN" or operacao == "JMPZ";
+}
+
+bool operacaoIsIO(const string &operacao) {
+    return operacao == "INPUT" or operacao == "OUTPUT" or
+           operacao == "C_INPUT" or operacao == "C_OUTPUT" or
+           operacao == "S_INPUT" or operacao == "S_OUTPUT";
 }
 
 string Tradutor::translate(const Linha &linha) {
@@ -47,11 +53,16 @@ string Tradutor::translate(const Linha &linha) {
             output_line = "jg " + linha.op1;
         }
     } else if (linha.operacao == "DIV") {
-        output_line = "mov eax, " + acc;
-        output_line = "mov edx, " + acc;
-        output_line = "idiv " + linha.op1;
+        output_line = "mov eax, " + acc + "\n";
+        output_line += "cdq\n"; // Extende o sinal do eax no edx
+        output_line += "idiv [" + linha.op1 + "]";
     } else if (linha.operacao == "MULT") {
-        // TODO Mult
+        output_line = "mov eax, " + acc + "\n";
+        output_line += "imult [" + linha.op1 + "]";
+        // TODO ver overflow
+    } else if (operacaoIsIO(linha.operacao)) {
+        output_line = "push WORD [" + linha.op1 + "]\n";
+        output_line += "call " + convertIO[linha.operacao];
     }
 
     return output_line;
