@@ -46,5 +46,22 @@ TEST_CASE("ColetaTermos da Linha", "[utils]") {
         REQUIRE(linha.operacao == "COPY");
         REQUIRE(linha.op1 == "LABEL + 123");
         REQUIRE(linha.op2 == "LABEL");
+    } SECTION("Rótulo com operações matemáticas com números com um dígito na primeira label") {
+        Linha linha = coletaTermosDaLinha("COPY LABEL + 3, OLD_DATA");
+        REQUIRE(linha.rotulo.empty());
+        REQUIRE(linha.operacao == "COPY");
+        REQUIRE(linha.op1 == "LABEL + 3");
+        REQUIRE(linha.op2 == "OLD_DATA");
+    }
+}
+
+
+TEST_CASE("linhaToString", "[utils]") {
+    SECTION("COPY LABEL + 3, OLD_DATA") {
+        Linha linha;
+        linha.operacao = "COPY";
+        linha.op1 = "LABEL + 3";
+        linha.op2 = "OLD_DATA";
+        REQUIRE(linhaToString(linha) == "COPY LABEL + 3, OLD_DATA");
     }
 }

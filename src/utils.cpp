@@ -56,6 +56,7 @@ Linha coletaTermosDaLinha(string linha, bool isToThrowErros) {
             elementos[cont] += ch;
             elementos[cont] += linha[i + 1]; // Coleta o próximo char que obrigatoriamente é um espaço
             elementos[cont] += linha[i + 2]; // coleta o número
+            jaPulou = false;
             i += 2;
             continue;
         }
