@@ -23,10 +23,11 @@ private:
             {"INPUT",    "LerInteiro"},
             {"OUTPUT",   "EscreverInteiro"},
             {"C_INPUT",  "LeerChar"},
-            {"C_OUPUT",  "EscreverChar"},
+            {"C_OUTPUT",  "EscreverChar"},
             {"S_INPUT",  "LeerString"},
             {"S_OUTPUT", "EscreveString"}
     };
 
+    void printLibrary();
     string translate(const Linha &linha);
 };

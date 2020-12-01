@@ -10,6 +10,10 @@ bool operacaoIsJmp(const string &operacao) {
     return operacao == "JMPZ" or operacao == "JMPN" or operacao == "JMPZ";
 }
 
+bool operacaoIsIOString(const string &operacao) {
+    return operacao == "S_INPUT" or operacao == "S_OUTPUT";
+}
+
 bool operacaoIsIO(const string &operacao) {
     return operacao == "INPUT" or operacao == "OUTPUT" or
            operacao == "C_INPUT" or operacao == "C_OUTPUT" or
@@ -60,8 +64,12 @@ string Tradutor::translate(const Linha &linha) {
         output_line = "mov eax, " + acc + "\n";
         output_line += "imult [" + linha.op1 + "]";
         // TODO ver overflow
+    } else if (operacaoIsIOString(linha.operacao)) {
+        output_line = "push [" + linha.op1 + "]\n"; // Endereço
+        output_line = "push [" + linha.op2 + "]\n"; // Tamanho da string
+        output_line += "call " + convertIO[linha.operacao];
     } else if (operacaoIsIO(linha.operacao)) {
-        output_line = "push WORD [" + linha.op1 + "]\n";
+        output_line = "push " + linha.op1 + "\n";
         output_line += "call " + convertIO[linha.operacao];
     }
 
@@ -97,5 +105,18 @@ void Tradutor::run() {
             output->writeLine(data);
         }
     }
+
+    printLibrary();
+
     arquivo->finishWrite();
+}
+
+void Tradutor::printLibrary() {
+    auto lib = new ArquivoFisico("../src/lib.asm", false);
+    string linha;
+    output->writeLine("section .text ; Bibliotecas de IO");
+    while (!lib->hasEnd()) {
+        lib->getLine(&linha);
+        output->writeLine(linha);
+    }
 }
