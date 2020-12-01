@@ -17,3 +17,23 @@ EscreverChar:
     int 80h
     leave
     ret 4
+
+LeerString:
+    enter 0,0
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, [EBP + 12]
+    mov edx, [EBP + 8]
+    int 80h
+    leave
+    ret 8
+
+EscreverString:
+    enter 0,0
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, [EBP + 12]
+    mov edx, [EBP + 8]
+    int 80h
+    leave
+    ret 8

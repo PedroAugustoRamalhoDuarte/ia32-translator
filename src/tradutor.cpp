@@ -49,6 +49,7 @@ string Tradutor::translate(const Linha &linha) {
         output_line = "jmp " + linha.op1;
     } else if (operacaoIsJmp(linha.operacao)) {
         output_line = "cmp " + acc + " 0\n";
+        // TODO Talvez fazer pular
         if (linha.operacao == "JMPZ") {
             output_line = "jz " + linha.op1;
         } else if (linha.operacao == "JMPN") {
@@ -65,8 +66,8 @@ string Tradutor::translate(const Linha &linha) {
         output_line += "imult [" + linha.op1 + "]";
         // TODO ver overflow
     } else if (operacaoIsIOString(linha.operacao)) {
-        output_line = "push [" + linha.op1 + "]\n"; // Endereço
-        output_line = "push [" + linha.op2 + "]\n"; // Tamanho da string
+        output_line = "push " + linha.op1 + "\n"; // Endereço
+        output_line += "push " + linha.op2 + "\n"; // Tamanho da string
         output_line += "call " + convertIO[linha.operacao];
     } else if (operacaoIsIO(linha.operacao)) {
         output_line = "push " + linha.op1 + "\n";

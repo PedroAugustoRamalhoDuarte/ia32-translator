@@ -25,7 +25,7 @@ private:
             {"C_INPUT",  "LeerChar"},
             {"C_OUTPUT",  "EscreverChar"},
             {"S_INPUT",  "LeerString"},
-            {"S_OUTPUT", "EscreveString"}
+            {"S_OUTPUT", "EscreverString"}
     };
 
     void printLibrary();
