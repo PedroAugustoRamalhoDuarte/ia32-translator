@@ -40,7 +40,7 @@ string Tradutor::translate(const Linha &linha) {
             listaBss.push_back(linha.rotulo + " resb " + linha.op1);
         }
     } else if (linha.operacao == "CONST") {
-        listaData.push_back(linha.rotulo + " dd '" + linha.op1 + "'");
+        listaData.push_back(linha.rotulo + " dd " + linha.op1);
     } else if (linha.operacao == "LOAD") {
         output_line = "mov " + acc + ",  [" + linha.op1 + "]"; // Parênteses para trabalhar com os valores
     } else if (linha.operacao == "STORE") {
@@ -60,10 +60,12 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "DIV") {
         output_line = "mov eax, " + acc + "\n";
         output_line += "cdq\n"; // Extende o sinal do eax no edx
-        output_line += "idiv [" + linha.op1 + "]";
+        output_line += "idiv dword [" + linha.op1 + "]\n";
+        output_line += "mov " + acc + ", eax";
     } else if (linha.operacao == "MULT") {
         output_line = "mov eax, " + acc + "\n";
-        output_line += "imult [" + linha.op1 + "]";
+        output_line += "imult dword [" + linha.op1 + "]";
+        output_line += "mov " + acc + ", eax";
         // TODO ver overflow
     } else if (operacaoIsIOString(linha.operacao)) {
         output_line = "push " + linha.op1 + "\n"; // Endereço
