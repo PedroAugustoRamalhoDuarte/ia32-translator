@@ -205,7 +205,7 @@ PrintMensagem:
     call EscreverInteiro
 
     push msg_end
-    push 11
+    push 12
     call EscreverString
 
 

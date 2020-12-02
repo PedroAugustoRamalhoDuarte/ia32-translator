@@ -6,8 +6,8 @@ Tradutor::Tradutor(ArquivoHandler *arquivoHandler) {
     this->output = new ArquivoFisico("../test.s", true);
     this->listaBss.emplace_back("BUFFER_IN resb 12");
     this->listaBss.emplace_back("BUFFER_IN_SIZE EQU 12");
-    this->listaData.emplace_back("msg_init dd \"Foram lidos \"");
-    this->listaData.emplace_back("msg_end dd \" caracteres\"");
+    this->listaData.emplace_back("msg_init db \"Foram lidos \"");
+    this->listaData.emplace_back("msg_end db \" caracteres\", 0ah");
 }
 
 bool operacaoIsJmp(const string &operacao) {
@@ -88,6 +88,7 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "C_INPUT" or linha.operacao == "INPUT") {
         output_line = "push " + linha.op1 + "\n";
         output_line += "call " + convertIO[linha.operacao] + "\n";
+        output_line += "mov eax, 1\n";
         output_line += "call PrintMensagem";
     } else if (linha.operacao == "STOP") {
         output_line = "mov eax, 1\n";
