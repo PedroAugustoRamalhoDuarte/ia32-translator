@@ -20,7 +20,7 @@ public:
 
 private:
     map<string, string> convertIO = {
-            {"INPUT",    "LerInteiro"},
+            {"INPUT",    "LeerInteiro"},
             {"OUTPUT",   "EscreverInteiro"},
             {"C_INPUT",  "LeerChar"},
             {"C_OUTPUT",  "EscreverChar"},

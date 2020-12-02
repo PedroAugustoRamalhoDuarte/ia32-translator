@@ -4,6 +4,8 @@
 Tradutor::Tradutor(ArquivoHandler *arquivoHandler) {
     this->arquivo = arquivoHandler;
     this->output = new ArquivoFisico("../test.s", true);
+    this->listaBss.emplace_back("BUFFER_IN resb 12");
+    this->listaBss.emplace_back("BUFFER_IN_SIZE EQU 12");
 }
 
 bool operacaoIsJmp(const string &operacao) {
@@ -51,7 +53,7 @@ string Tradutor::translate(const Linha &linha) {
         output_line = "cmp " + acc + " 0\n";
         // TODO Talvez fazer pular
         if (linha.operacao == "JMPZ") {
-            output_line = "jz " + linha.op1;
+            output_line = "je " + linha.op1;
         } else if (linha.operacao == "JMPN") {
             output_line = "jl " + linha.op1;
         } else if (linha.operacao == "JMPP") {
@@ -64,16 +66,22 @@ string Tradutor::translate(const Linha &linha) {
         output_line += "mov " + acc + ", eax";
     } else if (linha.operacao == "MULT") {
         output_line = "mov eax, " + acc + "\n";
-        output_line += "imult dword [" + linha.op1 + "]";
+        output_line += "imul dword [" + linha.op1 + "]\n";
         output_line += "mov " + acc + ", eax";
         // TODO ver overflow
     } else if (operacaoIsIOString(linha.operacao)) {
         output_line = "push " + linha.op1 + "\n"; // Endereço
         output_line += "push " + linha.op2 + "\n"; // Tamanho da string
         output_line += "call " + convertIO[linha.operacao];
+    } else if (linha.operacao == "OUTPUT") {
+        output_line = "push dword [" + linha.op1 + "]\n";
+        output_line += "call " + convertIO[linha.operacao];
     } else if (operacaoIsIO(linha.operacao)) {
         output_line = "push " + linha.op1 + "\n";
         output_line += "call " + convertIO[linha.operacao];
+    } else if (linha.operacao == "STOP") {
+        output_line = "mov eax, 1\n";
+        output_line += "int 80h";
     }
 
     return output_line;
