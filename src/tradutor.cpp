@@ -11,7 +11,7 @@ Tradutor::Tradutor(ArquivoHandler *arquivoHandler, string outputName) {
 }
 
 bool operacaoIsJmp(const string &operacao) {
-    return operacao == "JMPZ" or operacao == "JMPN" or operacao == "JMPZ";
+    return operacao == "JMPZ" or operacao == "JMPN" or operacao == "JMPP";
 }
 
 bool operacaoIsIOString(const string &operacao) {
@@ -52,14 +52,13 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "JMP") {
         output_line = "jmp " + linha.op1;
     } else if (operacaoIsJmp(linha.operacao)) {
-        output_line = "cmp " + acc + " 0\n";
-        // TODO Talvez fazer pular
+        output_line = "cmp " + acc + ", 0\n";
         if (linha.operacao == "JMPZ") {
-            output_line = "je " + linha.op1;
+            output_line += "je " + linha.op1;
         } else if (linha.operacao == "JMPN") {
-            output_line = "jl " + linha.op1;
+            output_line += "jl " + linha.op1;
         } else if (linha.operacao == "JMPP") {
-            output_line = "jg " + linha.op1;
+            output_line += "jg " + linha.op1;
         }
     } else if (linha.operacao == "DIV") {
         output_line = "mov eax, " + acc + "\n";
@@ -93,6 +92,11 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "STOP") {
         output_line = "mov eax, 1\n";
         output_line += "int 80h";
+    }
+
+    // Tratamento de rótulos
+    if (!linha.rotulo.empty() and linha.operacao != "SPACE" and linha.operacao != "CONST") {
+        output_line = linha.rotulo + ":\n" + output_line;
     }
 
     return output_line;
@@ -134,7 +138,7 @@ void Tradutor::run() {
 }
 
 void Tradutor::printLibrary() {
-    auto lib = new ArquivoFisico("../src/lib.asm", false);
+    auto lib = new ArquivoFisico("./src/lib.asm", false);
     string linha;
     output->writeLine("section .text ; Bibliotecas de IO");
     while (!lib->hasEnd()) {
