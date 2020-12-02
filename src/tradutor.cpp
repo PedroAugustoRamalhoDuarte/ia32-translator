@@ -88,7 +88,7 @@ string Tradutor::translate(const Linha &linha) {
     } else if (linha.operacao == "C_INPUT" or linha.operacao == "INPUT") {
         output_line = "push " + linha.op1 + "\n";
         output_line += "call " + convertIO[linha.operacao] + "\n";
-        output_line += "mov eax, 1\n";
+        if (linha.operacao == "C_INPUT") { output_line += "mov eax, 1\n"; }
         output_line += "call PrintMensagem";
     } else if (linha.operacao == "STOP") {
         output_line = "mov eax, 1\n";

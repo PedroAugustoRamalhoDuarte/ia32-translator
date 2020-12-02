@@ -117,6 +117,7 @@ LeerInteiro:
     ; Coloca o valor de eax no endereço passado de parametro
     mov edx, [EBP+8]
     mov [edx], eax
+    mov eax, ecx ; Retorna a quantidade de bytes lidos em eax
 
     pop edi
     pop edx
