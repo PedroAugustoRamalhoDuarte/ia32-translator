@@ -1,9 +1,9 @@
 #include "../include/tradutor.hpp"
 #include "../include/intrucao.hpp"
 
-Tradutor::Tradutor(ArquivoHandler *arquivoHandler) {
+Tradutor::Tradutor(ArquivoHandler *arquivoHandler, string outputName) {
     this->arquivo = arquivoHandler;
-    this->output = new ArquivoFisico("../test.s", true);
+    this->output = new ArquivoFisico(outputName, true);
     this->listaBss.emplace_back("BUFFER_IN resb 12");
     this->listaBss.emplace_back("BUFFER_IN_SIZE EQU 12");
     this->listaData.emplace_back("msg_init db \"Foram lidos \"");

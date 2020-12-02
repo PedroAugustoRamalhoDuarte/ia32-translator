@@ -14,7 +14,7 @@ public:
     vector<string> listaData;
     vector<string> listaBss;
 
-    explicit Tradutor(ArquivoHandler *arquivoHandler);
+    explicit Tradutor(ArquivoHandler *arquivoHandler, string outputName);
 
     void run();
 
