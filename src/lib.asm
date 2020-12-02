@@ -24,7 +24,11 @@ EscreverChar:
 
 LeerString:
     enter 0,0
-    pusha
+
+    push ebx
+    push ecx
+    push edx
+
     mov eax,0
     mov edx, [EBP + 8]
     add edx, 1 ; edx = Tamanho máximo da string + 1
@@ -42,18 +46,26 @@ LeerStringLoop:
     jne LeerStringLoop
 LeerStringOut:
     mov dword [ecx], 0
-    popa
+
+    push edx
+    push ecx
+    push ebx
+
+    dec eax; Devolve os caracteres lidos
+
     add esp, 4
     leave
     ret
 
 EscreverString:
     enter 0,0
+    pusha
     mov eax, 4
     mov ebx, 1
     mov ecx, [EBP + 12]
     mov edx, [EBP + 8]
     int 80h
+    popa
     leave
     ret
 
@@ -182,3 +194,20 @@ popa
 leave
 ret
 
+PrintMensagem:
+    enter 0,0
+
+    push msg_init
+    push 12
+    call EscreverString
+
+    push eax
+    call EscreverInteiro
+
+    push msg_end
+    push 11
+    call EscreverString
+
+
+    leave
+    ret

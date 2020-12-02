@@ -6,6 +6,8 @@ Tradutor::Tradutor(ArquivoHandler *arquivoHandler) {
     this->output = new ArquivoFisico("../test.s", true);
     this->listaBss.emplace_back("BUFFER_IN resb 12");
     this->listaBss.emplace_back("BUFFER_IN_SIZE EQU 12");
+    this->listaData.emplace_back("msg_init dd \"Foram lidos \"");
+    this->listaData.emplace_back("msg_end dd \" caracteres\"");
 }
 
 bool operacaoIsJmp(const string &operacao) {
@@ -73,12 +75,20 @@ string Tradutor::translate(const Linha &linha) {
         output_line = "push " + linha.op1 + "\n"; // Endereço
         output_line += "push " + linha.op2 + "\n"; // Tamanho da string
         output_line += "call " + convertIO[linha.operacao];
+        if (linha.operacao == "S_INPUT") {
+            output_line += "\n";
+            output_line += "call PrintMensagem";
+        }
     } else if (linha.operacao == "OUTPUT") {
         output_line = "push dword [" + linha.op1 + "]\n";
         output_line += "call " + convertIO[linha.operacao];
-    } else if (operacaoIsIO(linha.operacao)) {
+    } else if (linha.operacao == "C_OUTPUT") {
         output_line = "push " + linha.op1 + "\n";
         output_line += "call " + convertIO[linha.operacao];
+    } else if (linha.operacao == "C_INPUT" or linha.operacao == "INPUT") {
+        output_line = "push " + linha.op1 + "\n";
+        output_line += "call " + convertIO[linha.operacao] + "\n";
+        output_line += "call PrintMensagem";
     } else if (linha.operacao == "STOP") {
         output_line = "mov eax, 1\n";
         output_line += "int 80h";
