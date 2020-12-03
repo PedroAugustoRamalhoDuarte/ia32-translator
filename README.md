@@ -6,5 +6,6 @@ Repositório para o trabalho 2 da disciplina de Software Básico 2020/2
 - Matrícula: 17/0163717
 
 # Como rodar?
-- Digite make para compilar o tradutor
-- Para executar ./montador nomedoarquivo.asm
+- Digite `make clean` para limpar o projeto
+- Digite `make` para compilar o tradutor
+- Para executar `./tradutor nomedoarquivo.asm`
